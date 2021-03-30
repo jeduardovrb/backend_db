@@ -7,7 +7,7 @@ const Pessoa = require("../models/pessoa");
 
 const bcrypt = require("bcrypt");
 
-router.post("/signup", (req, res) => {
+router.post("/", (req, res) => {
     Pessoa.findOne({email: req.body.email})
     .then(doc_pessoa => {
         if (doc_pessoa) {  
@@ -17,7 +17,7 @@ router.post("/signup", (req, res) => {
                 name: req.body.name,
                 email: req.body.email,
                 senha: req.body.senha,
-                usename: req.body.usename,
+                comentario: req.body.comentario,
             });
 
             // criptografar a senha
@@ -25,7 +25,7 @@ router.post("/signup", (req, res) => {
                 bcrypt.hash(novo_reg_pessoa.senha, salt, function(err, hash) {
                     if (err) throw err;
                     novo_reg_pessoa.senha = hash;
-
+                    
                     // salvar no bd
                     novo_reg_pessoa
                     .save()
@@ -33,11 +33,15 @@ router.post("/signup", (req, res) => {
                     .catch(err => console.log(err));
                 });
             });
+
+            res.redirect('/');
         }
     })
     .catch(err => console.log(err));
 });
 
-router.get("/", (req, res) => res.json({status: "Acessp permitido"}));
+router.get("/", (req, res) => res.json({status: "Acesso permitido"}));
+
+router.get("*", (req, res) => res.json({Erro: "Página Inválido: 404"})); 
 
 module.exports = router;

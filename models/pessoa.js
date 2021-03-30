@@ -14,7 +14,7 @@ const PessoaSchema = new Schema({
         type: String,
         required: true 
     },
-    usename: {
+    comentario: {
         type: String
     },
     date: {
