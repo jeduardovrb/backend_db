@@ -8,10 +8,10 @@ const Pessoa = require("../models/pessoa");
 const bcrypt = require("bcrypt");
 
 router.post("/", (req, res) => {
-    Pessoa.findOne({email: req.body.email})
+    Pessoa.findOne({email: req.body.email, name: req.body.name, comentario: req.body.comentario})
     .then(doc_pessoa => {
         if (doc_pessoa) {  
-            return res.status(400).json({emailerro: "Email já registrado no sistema"});
+            return res.status(400).json({Erro: "Dados já registrado no sistema"});
         } else {
             const novo_reg_pessoa = Pessoa({
                 name: req.body.name,
@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
                 });
             });
 
-            res.redirect('/');
+            router.get('/', express.static(__dirname + '/src'));
         }
     })
     .catch(err => console.log(err));
