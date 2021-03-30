@@ -5,6 +5,8 @@ const router = express.Router();
 
 const Pessoa = require("../models/pessoa");
 
+const bcrypt = require("bcrypt");
+
 router.post("/signup", (req, res) => {
     Pessoa.findOne({email: req.body.email})
     .then(doc_pessoa => {
@@ -17,11 +19,20 @@ router.post("/signup", (req, res) => {
                 senha: req.body.senha,
                 usename: req.body.usename,
             });
-            // salvar no bd
-            novo_reg_pessoa
-            .save()
-            .then(p => res.json(p))
-            .catch(err => console.log(err));
+
+            // criptografar a senha
+            bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.hash(novo_reg_pessoa.senha, salt, function(err, hash) {
+                    if (err) throw err;
+                    novo_reg_pessoa.senha = hash;
+
+                    // salvar no bd
+                    novo_reg_pessoa
+                    .save()
+                    .then(p => res.json(p))
+                    .catch(err => console.log(err));
+                });
+            });
         }
     })
     .catch(err => console.log(err));
